@@ -1,21 +1,22 @@
 //
 //  VIPERRouter.swift
-//  PatternsiOSLab
+//  PatternsHomeWork
 //
-//  Created by Ильдар Залялов on 11/02/2019.
-//  Copyright © 2019 Ильдар Залялов. All rights reserved.
+//  Created by Александр Арсенюк on 16/02/2019.
+//  Copyright © 2019 Александр Арсенюк. All rights reserved.
 //
 
 import Foundation
+
 import UIKit
 
 class VIPERRouter: VIPERRouterInput {
     
     weak var view: UIViewController!
     
-    func showAlert() {
+    func showAlert(_ text: String) {
         
-        let alert = UIAlertController(title: "Alert", message: "Wow!", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Error", message: text, preferredStyle: .alert)
         
         let okButton = UIAlertAction(title: "Ok", style: .default) { (action) in
             
@@ -27,3 +28,4 @@ class VIPERRouter: VIPERRouterInput {
         
     }
 }
+

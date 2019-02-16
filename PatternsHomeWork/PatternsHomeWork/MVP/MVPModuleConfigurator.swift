@@ -1,9 +1,9 @@
 //
 //  MVPModuleConfigurator.swift
-//  PatternsiOSLab
+//  PatternsHomeWork
 //
-//  Created by Ильдар Залялов on 11/02/2019.
-//  Copyright © 2019 Ильдар Залялов. All rights reserved.
+//  Created by Александр Арсенюк on 12/02/2019.
+//  Copyright © 2019 Александр Арсенюк. All rights reserved.
 //
 
 import Foundation
@@ -14,7 +14,7 @@ class MVPModuleConfigurator: NSObject {
     @IBOutlet weak var viewController: UIViewController!
     
     override func awakeFromNib() {
-       
+        
         configureModule()
     }
     
@@ -23,12 +23,13 @@ class MVPModuleConfigurator: NSObject {
         guard let view = viewController as? MVPViewController else { fatalError() }
         
         let presenter = MVPPresenter()
-        let dataManager: DataManagerProtocol = DataManager()
+        let actionManager: UIActionManagerProtocol = UIActionManager()
         
         view.presenter = presenter
+        view.actionManager = actionManager
         
-        
-        presenter.view = view 
-        presenter.dataManager = dataManager
+        presenter.view = view
+   
     }
 }
+

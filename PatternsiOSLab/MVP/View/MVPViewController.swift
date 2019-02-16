@@ -17,6 +17,7 @@ class MVPViewController: UIViewController, MVPViewInput {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        
         presenter.setupInitialState()
     }
     

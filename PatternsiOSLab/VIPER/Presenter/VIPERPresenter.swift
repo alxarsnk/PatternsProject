@@ -9,6 +9,8 @@
 import Foundation
 
 class VIPERPresenter: VIPERViewOutput, VIPERInteractorOutput {
+   
+    
     
     weak var view: VIPERViewInput!
     var interactor: VIPERInteractorInput!
@@ -17,7 +19,7 @@ class VIPERPresenter: VIPERViewOutput, VIPERInteractorOutput {
     //MARK: - VIPERViewOutput -
     
     func setupInitialState() {
-        
+       
     }
     
     func didPressedChangeNameButton() {
