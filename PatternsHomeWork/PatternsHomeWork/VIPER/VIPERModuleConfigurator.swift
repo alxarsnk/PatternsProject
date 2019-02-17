@@ -26,7 +26,8 @@ class VIPERModuleConfigurator: NSObject {
         let presenter = VIPERPresenter()
         let interactor = VIPERInteractor()
         let router = VIPERRouter()
-        
+        let alertManager: AlertsManagerProtocol = AlertsManager()
+        let arythmeticManager: ArythmeticManagerProtocol = ArythmeticManager()
         
         view.presenter = presenter
         
@@ -35,8 +36,11 @@ class VIPERModuleConfigurator: NSObject {
         presenter.router = router
         
         interactor.output = presenter
+        interactor.arythmeticManager = arythmeticManager
         
         
         router.view = view
+        router.alertManager = alertManager
+        
     }
 }

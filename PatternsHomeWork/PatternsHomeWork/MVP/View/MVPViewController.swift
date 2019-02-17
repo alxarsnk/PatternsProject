@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MVPViewController: UIViewController, MVPViewInput {
+class MVPViewController: UIViewController, MVPViewInputProtocol {
     
     //MARK: - Constants -
     
@@ -16,9 +16,9 @@ class MVPViewController: UIViewController, MVPViewInput {
     
     @IBOutlet weak var memoryDisplayLabel: UILabel!
     
-    var presenter: MVPViewOutput!
+    var presenter: MVPViewOutputProtocol!
     
-    var actionManager: UIActionManagerProtocol!
+    var alertManager: AlertsManagerProtocol!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,7 +36,7 @@ class MVPViewController: UIViewController, MVPViewInput {
     }
     
     func showAlert(_ name: String) {
-        present(actionManager.showAlert(name), animated: true, completion: nil)
+        present(alertManager.showErrorAlert(name), animated: true, completion: nil)
     }
     
     //MARK: - Actions -

@@ -10,21 +10,15 @@ import Foundation
 
 import UIKit
 
-class VIPERRouter: VIPERRouterInput {
+class VIPERRouter: VIPERRouterInputProtocol {
     
     weak var view: UIViewController!
+    var alertManager: AlertsManagerProtocol!
     
     func showAlert(_ text: String) {
-        
-        let alert = UIAlertController(title: "Error", message: text, preferredStyle: .alert)
-        
-        let okButton = UIAlertAction(title: "Ok", style: .default) { (action) in
-            
-        }
-        
-        alert.addAction(okButton)
+      
+        let alert = alertManager.showErrorAlert(text)
         view.present(alert, animated: true, completion: nil)
-        
         
     }
 }

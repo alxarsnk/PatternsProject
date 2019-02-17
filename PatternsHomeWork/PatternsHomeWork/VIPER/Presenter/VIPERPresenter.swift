@@ -8,14 +8,14 @@
 
 import Foundation
 
-class VIPERPresenter: VIPERViewOutput, VIPERInteractorOutput {
+class VIPERPresenter: VIPERViewOutputProtocol, VIPERInteractorOutputProtocol {
     
     //MARK: - Constants -
     
-    weak var view: VIPERViewInput!
+    weak var view: VIPERViewInputProtocol!
     
-    var interactor: VIPERInteractorInput!
-    var router: VIPERRouterInput!
+    var interactor: VIPERInteractorInputProtocol!
+    var router: VIPERRouterInputProtocol!
     
     //MARK: - VIPERViewOutput -
     
@@ -64,43 +64,43 @@ class VIPERPresenter: VIPERViewOutput, VIPERInteractorOutput {
     //MARK: Digits
     
     func printOne() {
-        interactor.printOne()
+        interactor.addToValueStringOne()
     }
     
     func printTwo() {
-        interactor.printTwo()
+        interactor.addToValueStringTwo()
     }
     
     func printThree() {
-        interactor.printThree()
+        interactor.addToValueStringThree()
     }
     
     func printFour() {
-        interactor.printFour()
+        interactor.addToValueStringFour()
     }
     
     func printFive() {
-        interactor.printFive()
+        interactor.addToValueStringFive()
     }
     
     func printSix() {
-        interactor.printSix()
+        interactor.addToValueStringSix()
     }
     
     func printSeven() {
-        interactor.printSeven()
+        interactor.addToValueStringSeven()
     }
     
     func printEight() {
-        interactor.printEight()
+        interactor.addToValueStringEight()
     }
     
     func printNine() {
-        interactor.printNine()
+        interactor.addToValueStringNine()
     }
     
     func printZero() {
-        interactor.printZero()
+        interactor.addToValueStringZero()
     }
     
     //MARK: - VIPERInteractorOutput -
@@ -109,8 +109,8 @@ class VIPERPresenter: VIPERViewOutput, VIPERInteractorOutput {
         view.showMainDisplay(name)
     }
     
-    func showNewAlert(_ name: String?) {
-        router.showAlert(name!)
+    func showNewAlert(_ name: String) {
+        router.showAlert(name)
     }
     
     func didFinishedMemoryDisplay(_ name: String?) {

@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class VIPERViewController: UIViewController, VIPERViewInput {
+class VIPERViewController: UIViewController, VIPERViewInputProtocol {
     
     //MARK: - Constants -
     
@@ -17,9 +17,9 @@ class VIPERViewController: UIViewController, VIPERViewInput {
     
     @IBOutlet weak var memoryDisplayLabel: UILabel!
     
-    var presenter: VIPERViewOutput!
+    var presenter: VIPERViewOutputProtocol!
     
-    var actionManager: UIActionManagerProtocol!
+    var alertManager: AlertsManagerProtocol!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,7 +37,7 @@ class VIPERViewController: UIViewController, VIPERViewInput {
     }
     
     func showAlert(_ name: String) {
-        present(actionManager.showAlert(name), animated: true, completion: nil)
+        present(alertManager.showErrorAlert(name), animated: true, completion: nil)
     }
     
     //MARK: - Actions -

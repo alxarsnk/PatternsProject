@@ -10,7 +10,9 @@ import Foundation
 
 extension Double {
     
-    
+    /// if value has decimal part "0" (eg. 12.0)
+    ///
+    /// - Returns: true if decimal part is 0; false if decimal part is not 0;
     func isWhole () -> Bool {
         
         if String(self) != "inf" && String(self) != "nan" {
@@ -20,8 +22,10 @@ extension Double {
         } else {return false}
     }
     
-    func toInt() -> Int
-    {
+    /// function to get Int type from Double type vlaue
+    ///
+    /// - Returns: Int type value
+    func toInt() -> Int {
         return Int(self)
     }
 }

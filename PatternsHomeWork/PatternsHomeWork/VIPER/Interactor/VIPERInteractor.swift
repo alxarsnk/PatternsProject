@@ -8,101 +8,151 @@
 
 import Foundation
 
-class VIPERInteractor: VIPERInteractorInput {
+class VIPERInteractor: VIPERInteractorInputProtocol {
     
     //MARK: - Constants -
     
-    weak var output: VIPERInteractorOutput!
+    weak var output: VIPERInteractorOutputProtocol!
+    
+    var arythmeticManager: ArythmeticManagerProtocol!
+    
+    let clearValue = ""
+    let dotSymbol = "."
+    let maxLengthMainDisplay = 8
+    
     
     var firstValue: String = ""
     var memoryValue: String = ""
+    var temp: Double = 0
     
-    var lastOperation: String = ""
+    var lastOperation: Operations?
     
+    enum Operations {
+        
+        case add
+        case minus
+        case multiply
+        case devide
+        case pow
+    }
+    
+    /// function is adding value to string value
+    ///
+    /// - Parameter value: value wich will be added to string
+    func addValueToString(_ value: String) {
+        
+        if firstValue.count < maxLengthMainDisplay &&
+            (firstValue.first != "0" || firstValue.contains(dotSymbol)) {
+            firstValue = firstValue + value
+            output.didFinishedMainDisplay(firstValue)
+        } else {output.showNewAlert("Ограничение ввода")}
+    }
     
     //MARK: - Digits -
     
-    func printOne() {
-        if firstValue.count < 8 &&
-            (firstValue.first != "0" || firstValue.contains(".")) {
-            firstValue = firstValue + "1"
-            output.didFinishedMainDisplay(firstValue)
-        } else {output.showNewAlert("Ограничение ввода")}
+    func addToValueStringOne() {
+        addValueToString("1")
     }
     
-    func printTwo() {
-        if firstValue.count < 8 &&
-            (firstValue.first != "0" || firstValue.contains(".")) {
-            firstValue = firstValue + "2"
-            output.didFinishedMainDisplay(firstValue)
-        } else {output.showNewAlert("Ограничение ввода")}
+    func addToValueStringTwo() {
+        addValueToString("2")
     }
     
-    func printThree() {
-        if firstValue.count < 8 &&
-            (firstValue.first != "0" || firstValue.contains(".")) {
-            firstValue = firstValue + "3"
-            output.didFinishedMainDisplay(firstValue)
-        } else {output.showNewAlert("Ограничение ввода")}
+    func addToValueStringThree() {
+       addValueToString("3")
     }
     
-    func printFour() {
-        if firstValue.count < 8 &&
-            (firstValue.first != "0" || firstValue.contains(".")) {
-            firstValue = firstValue + "4"
-            output.didFinishedMainDisplay(firstValue)
-        } else {output.showNewAlert("Ограничение ввода")}
+    func addToValueStringFour() {
+        addValueToString("4")
     }
     
-    func printFive() {
-        if firstValue.count < 8 &&
-            (firstValue.first != "0" || firstValue.contains(".")) {
-            firstValue = firstValue + "5"
-            output.didFinishedMainDisplay(firstValue)
-        } else {output.showNewAlert("Ограничение ввода")}
+    func addToValueStringFive() {
+        addValueToString("5")
     }
     
-    func printSix() {
-        if firstValue.count < 8 &&
-            (firstValue.first != "0" || firstValue.contains(".")) {
-            firstValue = firstValue + "6"
-            output.didFinishedMainDisplay(firstValue)
-        } else {output.showNewAlert("Ограничение ввода")}
+    func addToValueStringSix() {
+        addValueToString("6")
     }
     
-    func printSeven() {
-        if firstValue.count < 8 &&
-            (firstValue.first != "0" || firstValue.contains(".")) {
-            firstValue = firstValue + "7"
-            output.didFinishedMainDisplay(firstValue)
-        } else {output.showNewAlert("Ограничение ввода")}
+    func addToValueStringSeven() {
+        addValueToString("7")
     }
     
-    func printEight() {
-        if firstValue.count < 8 &&
-            (firstValue.first != "0" || firstValue.contains(".")) {
-            firstValue = firstValue + "8"
-            output.didFinishedMainDisplay(firstValue)
-        } else {output.showNewAlert("Ограничение ввода")}
+    func addToValueStringEight() {
+       addValueToString("8")
     }
     
-    func printNine() {
-        if firstValue.count < 8 &&
-            (firstValue.first != "0" || firstValue.contains(".")) {
-            firstValue = firstValue + "9"
-            output.didFinishedMainDisplay(firstValue)
-        } else {output.showNewAlert("Ограничение ввода")}
+    func addToValueStringNine() {
+        addValueToString("9")
     }
     
-    func printZero() {
-        if firstValue.count < 8 &&
-            (firstValue.first != "0" || firstValue.contains(".")) {
-            firstValue = firstValue + "0"
-            output.didFinishedMainDisplay(firstValue)
-        } else {output.showNewAlert("Ограничение ввода")}
+    func addToValueStringZero() {
+        addValueToString("0")
     }
     
     //MARK: - Operations -
+    
+    func takePersent() {
+        
+        var result: String
+        
+        if let first = Double(firstValue), let second = Double(memoryValue) {
+            
+            switch lastOperation {
+            
+            /// add to first value(memoryValue) second(firstValue) persentages
+            /// from first
+            /// (add to 105 + 5% = 110,25)
+            case .add?:
+                result = String(second / 100 * first + second)
+           
+            /// first value(memoryValue) minus second(firstValue) persentages
+            /// from first value(memoryValue)
+            /// ( 105 - 5% = 99,75)
+            case .minus?:
+                result = String(second / 100 * first - second)
+                
+            /// first value(memoryValue) multiply second(firstValue) persentages
+            /// ( 105 * 5% = 5,25)
+            case .multiply?:
+                result = String(second / 100 * first)
+                
+            /// first value(memoryValue) devide second(firstValue) persentages
+            /// ( 105 / 5% = 2100)
+            case .devide?:
+                result = String(second * 100 / first)
+            
+            /// first value(memoryValue) in  second(firstValue) persentages pow
+            /// ( 105 / 5% = 2100)
+            case .pow?:
+                result = String(Foundation.pow(second, first/100))
+                
+            default:
+                result = "inncorrect"
+            }
+            
+            if  (Double(result)!.isWhole()) {
+                let temp: Double = Double(result)!
+                result = String(temp.toInt())
+            }
+            
+            firstValue = result
+            memoryValue = clearValue
+            output.didFinishedMainDisplay(result)
+            output.didFinishedMemoryDisplay(memoryValue)
+        }
+        else if let first = Double(firstValue) {
+            
+            firstValue = String(first/100)
+            if  (Double(firstValue)!.isWhole()) {
+                temp = Double(firstValue)!
+                firstValue = String(temp.toInt())
+            }
+            output.didFinishedMainDisplay(firstValue)
+        
+        } else {output.showNewAlert("Error with \"result\" operation")}
+    }
+    
     
     func isEqual() {
         
@@ -112,56 +162,55 @@ class VIPERInteractor: VIPERInteractorInput {
             
             switch lastOperation {
                 
-            case "add":
+            case .add?:
                 result = String(first+second)
                 
-            case "minus":
+            case .minus?:
                 result = String(second-first)
                 
-            case "multiply":
+            case .multiply?:
                 result = String(first*second)
                 
-            case "devide":
+            case .devide?:
                 result = String(second/first)
                 
-            case "pow":
+            case .pow?:
                 result = String(Foundation.pow(second, first))
                 
             default:
                 result = "inncorrect"
             }
             if  (Double(result)!.isWhole()) {
-                let temp: Double = Double(result)!
+                temp = Double(result)!
                 result = String(temp.toInt())
             }
             
             firstValue = result
-            memoryValue = ""
+            memoryValue = clearValue
             output.didFinishedMainDisplay(result)
             output.didFinishedMemoryDisplay(memoryValue)
-        }
+        } 
             
-        else {output.showNewAlert("Error")}
+    
     }
     
     func adding() {
+       
+        isEqual()
         
-        lastOperation = "add"
+        lastOperation = Operations.add
         
-        if memoryValue == "" {
+        if memoryValue == clearValue {
             memoryValue = firstValue
         } else {
+            
             if let first = Double(firstValue), let second = Double(memoryValue) {
-                memoryValue = String(first+second)
                 
-                if  (Double(memoryValue)!.isWhole()) {
-                    let temp: Double = Double(memoryValue)!
-                    memoryValue = String(temp.toInt())
-                }
+                memoryValue = arythmeticManager.adding(first, second)
             }
             else { output.showNewAlert("Error with \"Adding\" Operation") }
         }
-        firstValue = ""
+        firstValue = clearValue
         output.didFinishedMainDisplay(firstValue)
         output.didFinishedMemoryDisplay(memoryValue)
         
@@ -170,44 +219,42 @@ class VIPERInteractor: VIPERInteractorInput {
     
     func minus() {
         
-        lastOperation = "minus"
+        isEqual()
+        
+        lastOperation = Operations.minus
        
-        if memoryValue == "" {
+        if memoryValue == clearValue {
             memoryValue = firstValue
         } else {
+            
+            
             if let first = Double(firstValue), let second = Double(memoryValue) {
-                memoryValue = String(second-first)
                 
-                if  (Double(memoryValue)!.isWhole()) {
-                    let temp: Double = Double(memoryValue)!
-                    memoryValue = String(temp.toInt())
-                }
+                memoryValue = arythmeticManager.minusing(first, second)
             }
             else { output.showNewAlert("Error with \"minus\" Operation") }
         }
-        firstValue = ""
+        firstValue = clearValue
         output.didFinishedMainDisplay(firstValue)
         output.didFinishedMemoryDisplay(memoryValue)
     }
     
     func multiply() {
         
-        lastOperation = "multiply"
+        isEqual()
         
-        if memoryValue == "" {
+        lastOperation = Operations.multiply
+        
+        if memoryValue == clearValue {
             memoryValue = firstValue
         } else {
             if let first = Double(firstValue), let second = Double(memoryValue) {
-                memoryValue = String(first*second)
                 
-                if  (Double(memoryValue)!.isWhole()) {
-                    let temp: Double = Double(memoryValue)!
-                    memoryValue = String(temp.toInt())
-                }
+                memoryValue = arythmeticManager.multiplying(first, second)
             }
             else { output.showNewAlert("Error with \"Multiply\" Operation") }
         }
-        firstValue = ""
+        firstValue = clearValue
         output.didFinishedMainDisplay(firstValue)
         output.didFinishedMemoryDisplay(memoryValue)
         
@@ -215,30 +262,29 @@ class VIPERInteractor: VIPERInteractorInput {
     
     func devide() {
         
-        lastOperation = "devide"
+        isEqual()
+        
+        lastOperation = Operations.devide
        
-        if memoryValue == "" {
+        if memoryValue == clearValue {
             memoryValue = firstValue
         } else {
             if let first = Double(firstValue), let second = Double(memoryValue) {
-                memoryValue = String(second/first)
                 
-                if  (Double(memoryValue)!.isWhole()) {
-                    let temp: Double = Double(memoryValue)!
-                    memoryValue = String(temp.toInt())
-                }
+                memoryValue = arythmeticManager.deviding(first, second)
             }
             else { output.showNewAlert("Error with \"Devide\" Operation") }
         }
-        firstValue = ""
+        firstValue = clearValue
         output.didFinishedMainDisplay(firstValue)
         output.didFinishedMemoryDisplay(memoryValue)
         
     }
     
     func clearAll() {
-        firstValue = ""
-        memoryValue = ""
+        
+        firstValue = clearValue
+        memoryValue = clearValue
         output.didFinishedMainDisplay(firstValue)
         output.didFinishedMemoryDisplay(memoryValue)
     }
@@ -249,7 +295,7 @@ class VIPERInteractor: VIPERInteractorInput {
             value = -value
             firstValue = String(value)
             if  (Double(firstValue)!.isWhole()) {
-                let temp: Double = Double(firstValue)!
+                temp = Double(firstValue)!
                 firstValue = String(temp.toInt())
             }
             output.didFinishedMainDisplay(firstValue)
@@ -257,20 +303,12 @@ class VIPERInteractor: VIPERInteractorInput {
         else { output.showNewAlert("Error with Changing Operation") }
     }
     
-    func takePersent() {
-       
-        if let value = Double(firstValue) {
-            firstValue = String(value / 100)
-           output.didFinishedMainDisplay(firstValue)
-        }
-        else { output.showNewAlert("Error with persentage") }
-    }
-    
     func setDot() {
+       
         if (firstValue.first != nil) &&
-            !firstValue.contains(".") &&
-            firstValue.count < 7 {
-            firstValue = firstValue + "."
+            !firstValue.contains(dotSymbol) &&
+            firstValue.count < maxLengthMainDisplay - 1 {
+            firstValue = firstValue + dotSymbol
             output.didFinishedMainDisplay(firstValue)
         }
         else { output.showNewAlert("Error with dot") }
@@ -278,27 +316,25 @@ class VIPERInteractor: VIPERInteractorInput {
     
     func setPow() {
         
-        lastOperation = "pow"
+        isEqual()
         
-        if memoryValue == "" {
+        lastOperation = Operations.pow
+        
+        if memoryValue == clearValue {
             memoryValue = firstValue
         } else {
             if let first = Double(firstValue), let second = Double(memoryValue) {
                 
-                memoryValue = String(Foundation.pow(second, first))
-                
-                if  (Double(memoryValue)!.isWhole()) {
-                    let temp: Double = Double(memoryValue)!
-                    memoryValue = String(temp.toInt())
-                }
+                memoryValue = arythmeticManager.powing(first, second)
             }
             else { output.showNewAlert("Error with \"Pow\" Operation") }
         }
-        firstValue = ""
+        firstValue = clearValue
         output.didFinishedMainDisplay(firstValue)
         output.didFinishedMemoryDisplay(memoryValue)
         }
     }
+
     
     
     

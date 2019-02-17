@@ -23,12 +23,14 @@ class MVPModuleConfigurator: NSObject {
         guard let view = viewController as? MVPViewController else { fatalError() }
         
         let presenter = MVPPresenter()
-        let actionManager: UIActionManagerProtocol = UIActionManager()
+        let alertManager: AlertsManagerProtocol = AlertsManager()
+        let arythmeticManager: ArythmeticManagerProtocol = ArythmeticManager()
         
-        view.presenter = presenter
-        view.actionManager = actionManager
+        view.presenter = presenter 
+        view.alertManager = alertManager
         
         presenter.view = view
+        presenter.arythmeticManager = arythmeticManager
    
     }
 }

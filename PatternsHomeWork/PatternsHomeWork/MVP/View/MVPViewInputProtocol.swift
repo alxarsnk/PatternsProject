@@ -1,5 +1,5 @@
 //
-//  MVPViewInput.swift
+//  MVPViewInputProtocol.swift
 //  PatternsHomeWork
 //
 //  Created by Александр Арсенюк on 12/02/2019.
@@ -8,7 +8,8 @@
 
 import Foundation
 
-protocol MVPViewInput: AnyObject {
+/// Protocol to Display any states
+protocol MVPViewInputProtocol: AnyObject {
     
     /// Show on Main Display
     ///
@@ -20,6 +21,9 @@ protocol MVPViewInput: AnyObject {
     /// - Parameter name: text will display on Memory Display
     func showMemDisplay(_ name: String?)
     
-    func showAlert(_ name: String) 
+    /// show alert
+    ///
+    /// - Parameter name: body of alert
+    func showAlert(_ name: String)
     
     }

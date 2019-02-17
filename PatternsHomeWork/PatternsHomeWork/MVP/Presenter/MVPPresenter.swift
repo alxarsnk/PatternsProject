@@ -8,131 +8,202 @@
 
 import Foundation
 
-class MVPPresenter: MVPViewOutput {
+class MVPPresenter: MVPViewOutputProtocol {
     
     //MARK: - Constants -
     
-    weak var view: MVPViewInput!
+    weak var view: MVPViewInputProtocol!
+    
+    var arythmeticManager: ArythmeticManagerProtocol!
     
     var firstValue: String = ""
     var memoryValue: String = ""
-    var lastOperation: String = ""
+    var temp: Double = 0
+    
+    var lastOperation: Operations?
+    
+    let maxLengthMainDisplay = 8
+    let clearValue = ""
+    let dotSymbol = "."
+    
+    enum Operations {
+        
+        case add
+        case minus
+        case multiply
+        case devide
+        case pow
+    }
+    
+    /// function is adding value to string value
+    ///
+    /// - Parameter value: value wich will be added to string
+    func addValueToString(_ value: String) {
+        
+        if firstValue.count < maxLengthMainDisplay &&
+            (firstValue.first != "0" || firstValue.contains(dotSymbol)) {
+            firstValue = firstValue + value
+            view.showMainDisplay(firstValue)
+        } else {view.showAlert("Ограничение ввода")}
+    }
     
      //MARK: - MVP Operations -
     
     func clearAll() {
-        firstValue = ""
-        memoryValue = ""
+        firstValue = clearValue
+        memoryValue = clearValue
         view.showMainDisplay(firstValue)
         view.showMemDisplay(memoryValue)
     }
     
     func adding() {
         
-        lastOperation = "add"
+        isEqual()
         
-        if memoryValue == "" {
+        lastOperation = Operations.add
+        
+        if memoryValue == clearValue {
             memoryValue = firstValue
         } else {
             if let first = Double(firstValue), let second = Double(memoryValue) {
-                memoryValue = String(first+second)
                 
-                if  (Double(memoryValue)!.isWhole()) {
-                    let temp: Double = Double(memoryValue)!
-                    memoryValue = String(temp.toInt())
-                }
+                memoryValue = arythmeticManager.adding(first, second)
             }
             else { view.showAlert("Error with \"Adding\" Operation") }
         }
-        firstValue = ""
+        firstValue = clearValue
         view.showMainDisplay(firstValue)
         view.showMemDisplay(memoryValue)
      }
     
     func minus() {
         
-        lastOperation = "minus"
+        isEqual()
         
-        if memoryValue == "" {
+        lastOperation = Operations.minus
+        
+        if memoryValue == clearValue {
             memoryValue = firstValue
         } else {
             if let first = Double(firstValue), let second = Double(memoryValue) {
-                memoryValue = String(second-first)
                 
-                if  (Double(memoryValue)!.isWhole()) {
-                    let temp: Double = Double(memoryValue)!
-                    memoryValue = String(temp.toInt())
-                }
+                memoryValue = arythmeticManager.minusing(first, second)
             }
             else { view.showAlert("Error with \"minus\" Operation") }
         }
-        firstValue = ""
+        firstValue = clearValue
         view.showMainDisplay(firstValue)
         view.showMemDisplay(memoryValue)
     }
     
     func multiply() {
         
-        lastOperation = "multiply"
+        isEqual()
         
-        if memoryValue == "" {
+        lastOperation = Operations.multiply
+        
+        if memoryValue == clearValue {
             memoryValue = firstValue
         } else {
             if let first = Double(firstValue), let second = Double(memoryValue) {
-                memoryValue = String(first*second)
                 
-                if  (Double(memoryValue)!.isWhole()) {
-                    let temp: Double = Double(memoryValue)!
-                    memoryValue = String(temp.toInt())
-                }
+                memoryValue = arythmeticManager.multiplying(first, second)
             }
             else { view.showAlert("Error with \"Multiply\" Operation") }
         }
-        firstValue = ""
+        firstValue = clearValue
         view.showMainDisplay(firstValue)
         view.showMemDisplay(memoryValue)
     }
     
     func devide() {
        
-        lastOperation = "devide"
+        isEqual()
         
-        if memoryValue == "" {
+        lastOperation = Operations.devide
+        
+        if memoryValue == clearValue {
             memoryValue = firstValue
         } else {
             if let first = Double(firstValue), let second = Double(memoryValue) {
                 
-                memoryValue = String(second/first)
-                
-                if  (Double(memoryValue)!.isWhole()) {
-                    let temp: Double = Double(memoryValue)!
-                    memoryValue = String(temp.toInt())
-                }
+                memoryValue = arythmeticManager.deviding(first, second)
             }
             else { view.showAlert("Error with \"Devide\" Operation") }
         }
-        firstValue = ""
+        firstValue = clearValue
         view.showMainDisplay(firstValue)
         view.showMemDisplay(memoryValue)
     }
     
     func takePersent() {
         
-        if let value = Double(firstValue)
-        {
-            firstValue = String(value / 100)
-            view.showMainDisplay(firstValue)
+        var result: String
+        
+        if let first = Double(firstValue), let second = Double(memoryValue) {
+            
+            switch lastOperation {
+                
+                /// add to first value(memoryValue) second(firstValue) persentages
+                /// from first
+            /// (add to 105 + 5% = 110,25)
+            case .add?:
+                result = String(second / 100 * first + second)
+                
+                /// first value(memoryValue) minus second(firstValue) persentages
+                /// from first value(memoryValue)
+            /// ( 105 - 5% = 99,75)
+            case .minus?:
+                result = String(second / 100 * first - second)
+                
+                /// first value(memoryValue) multiply second(firstValue) persentages
+            /// ( 105 * 5% = 5,25)
+            case .multiply?:
+                result = String(second / 100 * first)
+                
+                /// first value(memoryValue) devide second(firstValue) persentages
+            /// ( 105 / 5% = 2100)
+            case .devide?:
+                result = String(second * 100 / first)
+                
+                /// first value(memoryValue) in  second(firstValue) persentages pow
+            /// ( 105 / 5% = 2100)
+            case .pow?:
+                result = String(Foundation.pow(second, first/100))
+                
+            default:
+                result = "inncorrect"
+            }
+            
+            if  (Double(result)!.isWhole()) {
+                temp = Double(result)!
+                result = String(temp.toInt())
+            }
+            
+            firstValue = result
+            memoryValue = clearValue
+            view.showMainDisplay(result)
+            view.showMemDisplay(memoryValue)
         }
-        else { view.showAlert("Error with persentage")}
+        else if let first = Double(firstValue) {
+            
+            firstValue = String(first/100)
+            if  (Double(firstValue)!.isWhole()) {
+                temp = Double(firstValue)!
+                firstValue = String(temp.toInt())
+            }
+            view.showMainDisplay(firstValue)
+            
+        } else {view.showAlert("Error with \"result\" operation")}
     }
     
     func setDot() {
         
         if (firstValue.first != nil) &&
-            !firstValue.contains(".") &&
-            firstValue.count < 7  {
+            !firstValue.contains(dotSymbol) &&
+            firstValue.count < maxLengthMainDisplay - 1  {
             
-            firstValue = firstValue + "."
+            firstValue = firstValue + dotSymbol
             view.showMainDisplay(firstValue)
         }
         else { view.showAlert("Error with dot") }
@@ -145,7 +216,7 @@ class MVPPresenter: MVPViewOutput {
             value = -value
             firstValue = String(value)
             if  (Double(firstValue)!.isWhole()) {
-                let temp: Double = Double(firstValue)!
+                temp = Double(firstValue)!
                 firstValue = String(temp.toInt())
             }
             view.showMainDisplay(firstValue)
@@ -155,22 +226,20 @@ class MVPPresenter: MVPViewOutput {
     
     func setPow() {
         
-        lastOperation = "pow"
-        if memoryValue == "" {
+        isEqual()
+        
+        lastOperation = Operations.pow
+        
+        if memoryValue == clearValue {
             memoryValue = firstValue
         } else {
             if let first = Double(firstValue), let second = Double(memoryValue) {
                 
-                memoryValue = String(Foundation.pow(second, first))
-                
-                if  (Double(memoryValue)!.isWhole()) {
-                    let temp: Double = Double(memoryValue)!
-                    memoryValue = String(temp.toInt())
-                }
+                memoryValue = arythmeticManager.powing(first, second)
             }
             else { view.showAlert("Error with \"Pow\" Operation") }
         }
-        firstValue = ""
+        firstValue = clearValue
         view.showMainDisplay(firstValue)
         view.showMemDisplay(memoryValue)
     }
@@ -183,117 +252,87 @@ class MVPPresenter: MVPViewOutput {
             
             switch lastOperation {
                 
-            case "add":
+            case .add?:
                 result = String(first+second)
                 
-            case "minus":
+            case .minus?:
                 result = String(second-first)
                 
-            case "multiply":
+            case .multiply?:
                 result = String(first*second)
                 
-            case "devide":
+            case .devide?:
                 result = String(second/first)
                 
-            case "pow":
+            case .pow?:
                 result = String(Foundation.pow(second, first))
                 
             default:
                 result = "inncorrect"
             }
             if  (Double(result)!.isWhole()) {
-                let temp: Double = Double(result)!
+                temp = Double(result)!
                 result = String(temp.toInt())
             }
             
             firstValue = result
-            memoryValue = ""
+            memoryValue = clearValue
             view.showMainDisplay(result)
             view.showMemDisplay(memoryValue)
-        }   else {view.showAlert("Error")}
+        }  
         
     }
     
     //MARK: - MVP Digits -
     
     func printOne() {
-        if firstValue.count < 8 &&
-            (firstValue.first != "0" || firstValue.contains(".")) {
-            firstValue = firstValue + "1"
-            view.showMainDisplay(firstValue)
-        }   else { view.showAlert("Ограничение ввода") }
+       
+        addValueToString("1")
     }
     
     func printTwo() {
-        if firstValue.count < 8 &&
-            (firstValue.first != "0" || firstValue.contains(".")) {
-            firstValue = firstValue + "2"
-            view.showMainDisplay(firstValue)
-        }   else { view.showAlert("Ограничение ввода") }
-    }
+  
+        addValueToString("2")
+        }
     
     func printThree() {
-        if firstValue.count < 8 &&
-            (firstValue.first != "0" || firstValue.contains(".")) {
-            firstValue = firstValue + "3"
-            view.showMainDisplay(firstValue)
-        }   else { view.showAlert("Ограничение ввода") }
+        
+       addValueToString("3")
     }
     
     func printFour() {
-        if firstValue.count < 8 &&
-            (firstValue.first != "0" || firstValue.contains(".")) {
-            firstValue = firstValue + "4"
-            view.showMainDisplay(firstValue)
-        }   else { view.showAlert("Ограничение ввода") }
+        
+        addValueToString("4")
     }
     
     func printFive() {
-        if firstValue.count < 8 &&
-            (firstValue.first != "0" || firstValue.contains(".")) {
-            firstValue = firstValue + "5"
-            view.showMainDisplay(firstValue)
-        }   else { view.showAlert("Ограничение ввода") }
+        
+        addValueToString("5")
     }
     
     func printSix() {
-        if firstValue.count < 8 &&
-            (firstValue.first != "0" || firstValue.contains(".")) {
-            firstValue = firstValue + "6"
-            view.showMainDisplay(firstValue)
-        }   else { view.showAlert("Ограничение ввода") }
+        
+        addValueToString("6")
     }
     
     func printSeven() {
-        if firstValue.count < 8 &&
-            (firstValue.first != "0" || firstValue.contains(".")) {
-            firstValue = firstValue + "7"
-            view.showMainDisplay(firstValue)
-        }   else { view.showAlert("Ограничение ввода") }
+        
+        addValueToString("7")
     }
     
     func printEight() {
-        if firstValue.count < 8 &&
-            (firstValue.first != "0" || firstValue.contains(".")) {
-            firstValue = firstValue + "8"
-            view.showMainDisplay(firstValue)
-        }   else { view.showAlert("Ограничение ввода") }
+        
+       addValueToString("8")
     }
     
     func printNine() {
-        if firstValue.count < 8 &&
-            (firstValue.first != "0" || firstValue.contains(".")) {
-            firstValue = firstValue + "9"
-            view.showMainDisplay(firstValue)
-        }   else { view.showAlert("Ограничение ввода") }
+        
+        addValueToString("9")
     }
     
     func printZero() {
-        if firstValue.count < 8 &&
-            (firstValue.first != "0" || firstValue.contains(".")) {
-            firstValue = firstValue + "0"
-            view.showMainDisplay(firstValue)
-        }   else { view.showAlert("Ограничение ввода") }
+        
+        addValueToString("0")
     }
     
     

@@ -1,5 +1,5 @@
 //
-//  VIPERViewInput.swift
+//  VIPERRouterInputProtocol.swift
 //  PatternsHomeWork
 //
 //  Created by Александр Арсенюк on 16/02/2019.
@@ -8,12 +8,7 @@
 
 import Foundation
 
-protocol VIPERViewInput: AnyObject {
+protocol VIPERRouterInputProtocol: AnyObject {
     
-    func showMainDisplay(_ name: String?)
-    
-    func showMemDisplay(_ name: String?)
-    
-    func showAlert(_ name: String)
-    
+    func showAlert(_ text: String)
 }
